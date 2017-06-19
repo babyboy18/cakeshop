@@ -16,6 +16,7 @@ from handler import site, admin, ajax, oauth, shop, pay, user
 
 define('cmd', default='runserver', metavar='runserver|syncdb')
 define('port', default=8080, type=int)
+define('address', default='127.0.0.1', type=str)
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -65,7 +66,7 @@ def syncdb():
 
 def runserver():
     http_server = HTTPServer(Application(), xheaders=True)
-    http_server.listen(options.port)
+    http_server.listen(options.port, options.address)
     
     loop = tornado.ioloop.IOLoop.instance()
     
@@ -94,7 +95,7 @@ def runserver():
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
     
-    logging.info('Server running on http://0.0.0.0:%d'%(options.port))
+    logging.info('Server running on http://%s:%d' % (options.address, options.port))
     loop.start()
 
 if __name__ == '__main__':
